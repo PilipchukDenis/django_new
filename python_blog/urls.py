@@ -1,24 +1,20 @@
-# python_blog\urls.py Django APP python_blog
-from django.contrib import admin
-from django.urls import path
-from python_blog.views import catalog_posts, post_detail, catalog_categories, category_detail, catalog_tags, tag_detail
 
-# Общий префикс posts/
+# python_blog/urls.py
+from django.urls import path
+from .views import (
+    main, catalog_posts, catalog_categories,
+    category_detail, catalog_tags, tag_detail, post_detail
+)
+
+app_name = 'python_blog'
+
 urlpatterns = [
-    # Каталог  постов posts/
-    path('', catalog_posts, name='posts'),
-    
-    # Категории
-    # Категории posts/categories/
-    # Категории posts/categories/python/
-    path('categories/', catalog_categories, name='categories'),
+    path('', main, name='main'),
+    path('posts/', catalog_posts, name='catalog_posts'),
+    path('categories/', catalog_categories, name='catalog_categories'),
     path('categories/<slug:category_slug>/', category_detail, name='category_detail'),
-    
-    # Теги posts/tags/
-    # Теги posts/tags/python/
-    path('tags/', catalog_tags, name='tags'),
+    path('tags/', catalog_tags, name='catalog_tags'),
     path('tags/<slug:tag_slug>/', tag_detail, name='tag_detail'),
-    
-    # Посты posts/tags/
-    path('<slug:post_slug>/', post_detail, name='post_detail'),
+    path('<int:post_id>/', post_detail, name='post_detail'),
 ]
+
