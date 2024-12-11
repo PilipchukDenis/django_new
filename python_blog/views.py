@@ -1,9 +1,7 @@
-
-# views.py
-from django.http import HttpResponse, Http404
+from django.shortcuts import render
+from django.http import HttpResponse
 from django.urls import reverse
 
-# Константы данных
 CATEGORIES = [
     {'slug': 'python', 'name': 'Python'},
     {'slug': 'django', 'name': 'Django'},
@@ -12,63 +10,47 @@ CATEGORIES = [
     {'slug': 'linux', 'name': 'Linux'},
 ]
 
-# Главная страница
 def main(request):
-    links = [
-        f'<a href="{reverse("catalog_posts")}">Каталог постов</a>',
-        f'<a href="{reverse("catalog_categories")}">Каталог категорий</a>',
-        f'<a href="{reverse("catalog_tags")}">Каталог тегов</a>',
-    ]
-    return HttpResponse('<br>'.join(links))
+    catalog_categories_url = reverse('blog:categories')
+    catalog_tags_url = reverse('blog:tags')
 
-# Каталог постов
+    return render(request, "main.html")
+
+
 def catalog_posts(request):
-    return HttpResponse('Здесь будут отображаться все доступные посты.')
+    return HttpResponse('Каталог постов')
 
-# Каталог категорий
+def post_detail(request, post_slug):
+    return HttpResponse(f'Страница поста {post_slug}')
+
 def catalog_categories(request):
-    html = "<ul>"
+    links = []
     for category in CATEGORIES:
-        html += f'<li><a href="{reverse("category_detail", args=[category["slug"]])}">{category["name"]}</a></li>'
-    html += "</ul>"
-    return HttpResponse(html)
+        url = reverse('blog:category_detail', args=[category['slug']])
+        links.append(f'<p><a href="{url}">{category["name"]}</a></p>')
+    
+    return HttpResponse(f"""
+        <h1>Каталог категорий</h1>
+        {''.join(links)}
+        <p><a href="{reverse('blog:posts')}">К списку постов</a></p>
+    """)
 
-# Детальная информация о категории
 def category_detail(request, category_slug):
-    category = next((cat for cat in CATEGORIES if cat['slug'] == category_slug), None)
-    if category is None:
-        raise Http404("Категория не найдена")
-    return HttpResponse(f'Детальная информация о категории: {category["name"]}')
 
-# Каталог тегов
+    category = [cat for cat in CATEGORIES if cat['slug'] == category_slug][0]
+    
+    if category:
+        name = category['name']
+    else:
+        name = category_slug
+        
+    return HttpResponse(f"""
+        <h1>Категория: {name}</h1>
+        <p><a href="{reverse('blog:categories')}">Назад к категориям</a></p>
+    """)
+
 def catalog_tags(request):
-    # Фиктивные данные о тегах
-    TAGS = [
-        {'slug': 'web', 'name': 'Web'},
-        {'slug': 'backend', 'name': 'Backend'},
-        {'slug': 'frontend', 'name': 'Frontend'},
-    ]
-    html = "<ul>"
-    for tag in TAGS:
-        html += f'<li><a href="{reverse("tag_detail", args=[tag["slug"]])}">{tag["name"]}</a></li>'
-    html += "</ul>"
-    return HttpResponse(html)
+    return HttpResponse('Каталог тегов')
 
-
-# Детальная информация о теге
 def tag_detail(request, tag_slug):
-    # Фиктивные данные о тегах
-    TAGS = [
-        {'slug': 'web', 'name': 'Web'},
-        {'slug': 'backend', 'name': 'Backend'},
-        {'slug': 'frontend', 'name': 'Frontend'},
-    ]
-    tag = next((tag for tag in TAGS if tag['slug'] == tag_slug), None)
-    if tag is None:
-        raise Http404("Тег не найден")
-    return HttpResponse(f'Детальная информация о теге: {tag["name"]}')
-
-# Детальная информация о посте
-def post_detail(request, post_id):
-    return HttpResponse(f'Детальная информация о посте с ID: {post_id}')
-
+    return HttpResponse(f'Страница тега {tag_slug}')
