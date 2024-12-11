@@ -54,6 +54,7 @@ def catalog_tags(request):
     html += "</ul>"
     return HttpResponse(html)
 
+
 # Детальная информация о теге
 def tag_detail(request, tag_slug):
     # Фиктивные данные о тегах
