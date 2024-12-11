@@ -8,6 +8,7 @@ from .views import (
 
 app_name = 'python_blog'
 
+
 urlpatterns = [
     path('', main, name='main'),
     path('posts/', catalog_posts, name='catalog_posts'),
