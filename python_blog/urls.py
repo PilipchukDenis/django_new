@@ -1,8 +1,13 @@
 # python_blog/urls.py
 from django.urls import path
 from .views import (
-    main, catalog_posts, catalog_categories,
-    category_detail, catalog_tags, tag_detail, post_detail
+    main,
+    catalog_posts,
+    catalog_categories,
+    category_detail,
+    catalog_tags,
+    tag_detail,
+    post_detail,
 )
 
 app_name = 'python_blog'
@@ -16,4 +21,3 @@ urlpatterns = [
     path('tags/<slug:tag_slug>/', tag_detail, name='tag_detail'),
     path('<int:post_id>/', post_detail, name='post_detail'),
 ]
-

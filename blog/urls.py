@@ -4,6 +4,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('python_blog.urls')),  # Путь для главной страницы и маршрутов блога
+    path('', include('python_blog.urls')),  # Подключение маршрутов приложения
 ]
-
