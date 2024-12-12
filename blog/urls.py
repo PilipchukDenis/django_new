@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.urls import path
 from python_blog.views import main
 from django.urls import include
+
 """
 Конверторы путей Django:
 str - строки, любые символы кроме слэша '/' (по умолчанию)
@@ -17,9 +18,8 @@ path('blog/<slug:post_slug>/', views.post_detail)
 
 """
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', main),
-
+    path("admin/", admin.site.urls),
+    path("", main),
     # Подключаем python_blog.urls
-    path('posts/', include('python_blog.urls')),
+    path("posts/", include("python_blog.urls")),
 ]
