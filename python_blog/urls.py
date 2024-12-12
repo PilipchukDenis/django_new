@@ -1,4 +1,3 @@
-
 # python_blog/urls.py
 from django.urls import path
 from .views import (
@@ -7,7 +6,6 @@ from .views import (
 )
 
 app_name = 'python_blog'
-
 
 urlpatterns = [
     path('', main, name='main'),
