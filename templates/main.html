@@ -10,7 +10,7 @@
     {# Это Django коммент #}
     <!-- Это HTML коммент -->
     <h1>{{ title }}</h1>
-    <p>{{ text }}</p>
+    <p>{{ text|cut:"главной" }}</p>
     <hr>
    {% comment %} Условия в шаблонизаторе Django {% endcomment %}
 {% if  user_status == "admin" %}
@@ -26,4 +26,9 @@
 {% if user_status in "admin moderator editor" %}
     <p>У вас есть права на редактирование</p>
 {% endif %}
+
+<p>{{group|default:"Без группы"}}</p>
+
 {% endblock %}
+
+
