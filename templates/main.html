@@ -1,15 +1,29 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=`, initial-scale=1.0">
-    <title>Главная страница</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+<!-- main.html  шаблон. Блок content -->
     {% comment %} Оставим HTML коммент {% endcomment %}
     {# Это Django коммент #}
     <!-- Это HTML коммент -->
     <h1>{{ title }}</h1>
     <p>{{ text }}</p>
-</body>
-</html>
+    <hr>
+   {% comment %} Условия в шаблонизаторе Django {% endcomment %}
+{% if  user_status == "admin" %}
+<p>Здравствуй Админ!</p>
+{% elif user_status == "moderator" %}
+<p>Здравствуй модератор!</p>
+{% else %}
+<p>Здравствуй смертный!</p>
+{% endif %}
+
+{% comment %} Проверка на вхождение в перечень {% endcomment %}
+
+{% if user_status in "admin moderator editor" %}
+    <p>У вас есть права на редактирование</p>
+{% endif %}
+{% endblock %}
