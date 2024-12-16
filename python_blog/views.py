@@ -59,6 +59,7 @@ def tag_detail(request, tag_slug):
         raise Http404("Тег не найден.")
     return HttpResponse(f'Детальная информация: {tag["name"]}.')
 
+ 
 
 def post_detail(request, post_id):
     return HttpResponse(f'Детальная информация о посте с ID: {post_id}.')
