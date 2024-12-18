@@ -10,14 +10,6 @@ CATEGORIES = [
     {"slug": "linux", "name": "Linux"},
 ]
 
-MENU_ITEMS = [
-    {"title": "Главная", "url_name": "main"},
-    {"title": "Все посты", "url_name": "blog:posts"},
-    {"title": "Категории", "url_name": "blog:categories"},
-    {"title": "Теги", "url_name": "blog:tags"},
-]
-
-
 def main(request):
     catalog_categories_url = reverse("blog:categories")
     catalog_tags_url = reverse("blog:tags")
@@ -26,7 +18,7 @@ def main(request):
         "title": "Главная страница",
         "text": "Текст главной страницы",
         "user_status": "moderator",
-        "menu_items": MENU_ITEMS,
+        "active_page": "main"
     }
     return render(request, "main.html", context)
 
@@ -49,6 +41,7 @@ def catalog_categories(request):
         "title": "Категории",
         "text": "Текст страницы с категориями",
         "categories": CATEGORIES,
+        "active_page": "blog:categories"
     }
     return render(request, "catalog_categories.html", context)
 

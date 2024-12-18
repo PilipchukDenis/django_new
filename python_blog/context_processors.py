@@ -12,7 +12,6 @@ MENU_ITEMS = [
 ]
 
 
-
 def menu_items(request):
     return {
         'menu_items': MENU_ITEMS
