@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load text_tags %}
 {% block title %}
 {{ title }}
 {% endblock %}
@@ -10,7 +10,7 @@
     {# Это Django коммент #}
     <!-- Это HTML коммент -->
     <h1>{{ title }}</h1>
-    <p>{{ text|cut:"главной" }}</p>
+    <p>{{ text|cut:"главной"}}</p>
     <hr>
    {% comment %} Условия в шаблонизаторе Django {% endcomment %}
 {% if  user_status == "admin" %}
@@ -29,6 +29,9 @@
 
 <p>{{group|default:"Без группы"}}</p>
 
+<p>{{"Это какой то текст с пробелами"|replace_spaces}} </p>
 {% endblock %}
 
-
+{% block footer %}
+<p>{% uppercase "Все права защищены." %} Python422. Академия Топ. 2025 г. {% lowercase  "NEW"%} </p>
+{% endblock footer %}
