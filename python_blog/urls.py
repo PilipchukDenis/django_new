@@ -22,6 +22,6 @@ urlpatterns = [
     path('tags/', catalog_tags, name='tags'),
     path('tags/<slug:tag_slug>/', tag_detail, name='tag_detail'),
     
-    # Посты posts/tags/
+    # Посты posts/
     path('<slug:post_slug>/', post_detail, name='post_detail'),
 ]

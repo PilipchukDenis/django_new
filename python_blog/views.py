@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
+from .blog_data import dataset
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -9,6 +10,7 @@ CATEGORIES = [
     {"slug": "docker", "name": "Docker"},
     {"slug": "linux", "name": "Linux"},
 ]
+
 
 def main(request):
     catalog_categories_url = reverse("blog:categories")
@@ -22,13 +24,37 @@ def main(request):
     return render(request, "main.html", context)
 
 
+def about(request):
+    context = {
+        "title": "О компании",
+        "text": "Мы - команда профессионалов в области веб-разработки",
+    }
+    return render(request, "about.html", context)
+
+
 def catalog_posts(request):
-    return HttpResponse("Каталог постов")
+    # Получаем все опубликованные посты
+    posts = [post for post in dataset if post['is_published']]
+    context = {
+        'title': 'Блог',
+        'posts': posts
+    }
+    return render(request, 'blog.html', context)
 
 
 def post_detail(request, post_slug):
-    return HttpResponse(f"Страница поста {post_slug}")
-
+    # Находим нужный пост по slug
+    post = next((post for post in dataset if post['slug'] == post_slug), None)
+    
+    if post is None:
+        # Handle the case when post is not found
+        return HttpResponse("Post not found", status=404)
+    
+    context = {
+        'title': post['title'],
+        'post': post
+    }
+    return render(request, 'post_detail.html', context)
 
 def catalog_categories(request):
     links = []
@@ -40,7 +66,6 @@ def catalog_categories(request):
         "title": "Категории",
         "text": "Текст страницы с категориями",
         "categories": CATEGORIES,
-      
     }
     return render(request, "catalog_categories.html", context)
 
