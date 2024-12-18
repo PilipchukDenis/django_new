@@ -3,7 +3,7 @@
         {% for item in menu_items %}
             <li>
                 <a href="{% url item.url_name %}" 
-                   class="{% if active_page == item.url_name %}active{% endif %}">
+                   class="{% if item.is_active %}active{% endif %}">
                     {{ item.title }}
                 </a>
             </li>
