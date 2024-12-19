@@ -41,20 +41,9 @@ def catalog_posts(request):
     }
     return render(request, 'blog.html', context)
 
-
-def post_detail(request, post_slug):
-    # Находим нужный пост по slug
-    post = next((post for post in dataset if post['slug'] == post_slug), None)
-    
-    if post is None:
-        # Handle the case when post is not found
-        return HttpResponse("Post not found", status=404)
-    
-    context = {
-        'title': post['title'],
-        'post': post
-    }
-    return render(request, 'post_detail.html', context)
+def post_detail(request, post_id):
+    post = None  # Заглушка для одного поста (позже подключим базу данных)
+    return render(request, 'post_detail.html', {'post': post})
 
 def catalog_categories(request):
     links = []
@@ -93,3 +82,13 @@ def catalog_tags(request):
 
 def tag_detail(request, tag_slug):
     return HttpResponse(f"Страница тега {tag_slug}")
+# Главная страница
+def main_page(request):
+    return render(request, 'main.html')  # Отправляем в шаблон main.html
+
+# О проекте
+def about_page(request):
+    return render(request, 'about.html')  # Отправляем в шаблон about.html
+def blog_page(request):
+    posts = []  # Пока заглушка для списка постов
+    return render(request, 'blog.html', {'posts': posts})  # Передаём в шаблон список постов

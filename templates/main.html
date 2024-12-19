@@ -4,19 +4,21 @@
 {{ title }}
 {% endblock %}
 
+
 {% block content %}
 <!-- main.html  шаблон. Блок content -->
     {% comment %} Оставим HTML коммент {% endcomment %}
     {# Это Django коммент #}
     <!-- Это HTML коммент -->
     <h1>{{ title }}</h1>
-    <p>{{ text|cut:"главной"}}</p>
+    {% comment %} <p>{{ text|cut:"главной"}}</p> {% endcomment %}
     <hr>
    {% comment %} Условия в шаблонизаторе Django {% endcomment %}
 {% if  user_status == "admin" %}
-<p>Здравствуй Админ!</p>
+
 {% elif user_status == "moderator" %}
-<p>Здравствуй модератор!</p>
+<h4>Добро пожаловать в блог</h4>
+<p>Сборная информация о сайте: последние посты, категории и тэги.</p>
 {% else %}
 <p>Здравствуй смертный!</p>
 {% endif %}
