@@ -7,3 +7,4 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     category = models.CharField(null=True, blank=True, max_length=100)
     
+
