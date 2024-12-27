@@ -1,39 +1,11 @@
 {% extends "base.html" %}
-{% load text_tags %}
+{% load static %}
 {% block title %}
-{{ title }}
-{% endblock %}
-
-
+Main
+{% endblock title %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/main_page.css' %}">
+{% endblock head %}
 {% block content %}
-<!-- main.html  шаблон. Блок content -->
-    {% comment %} Оставим HTML коммент {% endcomment %}
-    {# Это Django коммент #}
-    <!-- Это HTML коммент -->
-    <h1>{{ title }}</h1>
-    {% comment %} <p>{{ text|cut:"главной"}}</p> {% endcomment %}
-    <hr>
-   {% comment %} Условия в шаблонизаторе Django {% endcomment %}
-{% if  user_status == "admin" %}
-
-{% elif user_status == "moderator" %}
-<h4>Добро пожаловать в блог</h4>
-<p>Сборная информация о сайте: последние посты, категории и тэги.</p>
-{% else %}
-<p>Здравствуй смертный!</p>
-{% endif %}
-
-{% comment %} Проверка на вхождение в перечень {% endcomment %}
-
-{% if user_status in "admin moderator editor" %}
-    <p>У вас есть права на редактирование</p>
-{% endif %}
-
-<p>{{group|default:"Без группы"}}</p>
-
-<p>{{"Это какой то текст с пробелами"|replace_spaces}} </p>
-{% endblock %}
-
-{% block footer %}
-<p>{% uppercase "Все права защищены." %} Python422. Академия Топ. 2025 г. {% lowercase  "NEW"%} </p>
-{% endblock footer %}
+<h1>Главная страница</h1>
+{% endblock content %}

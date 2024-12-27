@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}
+О нас | {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Hero секция -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1><i class="bi bi-building"></i> О нашей компании</h1>
+            <p class="lead">Мы создаем будущее веб-разработки</p>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="row">
+        <div class="col-md-6">
+            <h2><i class="bi bi-trophy"></i> Наши достижения</h2>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <h3>500+</h3>
+                            <p>Студентов</p>
+                        </div>
+                        <div class="col-4">
+                            <h3>50+</h3>
+                            <p>Курсов</p>
+                        </div>
+                        <div class="col-4">
+                            <h3>95%</h3>
+                            <p>Трудоустройство</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2><i class="bi bi-gear"></i> Технологии</h2>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-primary">Python</span>
+                        <span class="badge bg-success">Django</span>
+                        <span class="badge bg-info">PostgreSQL</span>
+                        <span class="badge bg-warning">JavaScript</span>
+                        <span class="badge bg-danger">Redis</span>
+                        <span class="badge bg-secondary">Docker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Команда -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4"><i class="bi bi-people"></i> Наша команда</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-person-circle display-4"></i>
+                    <h5 class="card-title mt-3">Иван Петров</h5>
+                    <p class="card-text">CEO & Основатель</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-person-circle display-4"></i>
+                    <h5 class="card-title mt-3">Мария Сидорова</h5>
+                    <p class="card-text">Ведущий преподаватель</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-person-circle display-4"></i>
+                    <h5 class="card-title mt-3">Алексей Иванов</h5>
+                    <p class="card-text">Технический директор</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контакты -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h3><i class="bi bi-envelope"></i> Свяжитесь с нами</h3>
+                    <p class="mb-0">Email: info@company.com</p>
+                    <p class="mb-0">Телефон: +7 (999) 123-45-67</p>
+                    <p>Адрес: г. Москва, ул. Примерная, д. 1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,5 @@
-*venv/ 
-*.pyc 
-*__pycache__/ 
+venv/
+*.рус
+__pycache__/
 db.sqlite3
-AppData/
-.vscode/
-.idea/
+.idea

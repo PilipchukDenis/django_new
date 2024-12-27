@@ -4,13 +4,18 @@ from django.urls import reverse
 from .blog_data import dataset
 
 CATEGORIES = [
-    {"slug": "python", "name": "Python"},
-    {"slug": "django", "name": "Django"},
-    {"slug": "postgresql", "name": "PostgreSQL"},
-    {"slug": "docker", "name": "Docker"},
-    {"slug": "linux", "name": "Linux"},
+    {'slug': 'python', 'name': 'Python'},
+    {'slug': 'django', 'name': 'Django'},
+    {'slug': 'postgresql', 'name': 'PostgreSQL'},
+    {'slug': 'docker', 'name': 'Docker'},
+    {'slug': 'linux', 'name': 'Linux'},
 ]
 
+TAGS = [
+    {'slug': 'html', 'name': 'HTML'},
+    {'slug': 'css', 'name': 'CSS'},
+    {'slug': 'sql', 'name': 'SQL'}
+]
 
 def main(request):
     catalog_categories_url = reverse("blog:categories")
@@ -23,72 +28,60 @@ def main(request):
     }
     return render(request, "main.html", context)
 
-
 def about(request):
-    context = {
-        "title": "О компании",
-        "text": "Мы - команда профессионалов в области веб-разработки",
-    }
-    return render(request, "about.html", context)
-
+    return render(request, "about.html")
 
 def catalog_posts(request):
-    # Получаем все опубликованные посты
-    posts = [post for post in dataset if post['is_published']]
     context = {
-        'title': 'Блог',
-        'posts': posts
+            'posts': dataset
     }
-    return render(request, 'blog.html', context)
+    return render(request, 'python_blog/blog.html', context=context)
 
-def post_detail(request, post_id):
-    post = None  # Заглушка для одного поста (позже подключим базу данных)
-    return render(request, 'post_detail.html', {'post': post})
+def post_detail(request, post_slug):
+    post = [post for post in POSTS if post['slug'] == post_slug]
+    if post: post = post[0]
+    if post:
+        name = post['title']
+    else:
+        return HttpResponse(f'<p>Поста {post_slug} не сущетсвует</p>')
+
+    return HttpResponse(f'''
+        <h1>Пост {name}</h1>
+        <p>{post['text']}</p>
+        <p><a href="{reverse('blog:posts')}">Назад к постам</a></p>
+        ''')
 
 def catalog_categories(request):
-    links = []
-    for category in CATEGORIES:
-        url = reverse("blog:category_detail", args=[category["slug"]])
-        links.append(f'<p><a href="{url}">{category["name"]}</a></p>')
-
     context = {
-        "title": "Категории",
-        "text": "Текст страницы с категориями",
-        "categories": CATEGORIES,
+        'categories': CATEGORIES
     }
-    return render(request, "catalog_categories.html", context)
-
+    return render(request, 'python_blog/catalog_categories.html', context=context)
 
 def category_detail(request, category_slug):
-
-    category = [cat for cat in CATEGORIES if cat["slug"] == category_slug][0]
-
+    category = [cat for cat in CATEGORIES if cat['slug'] == category_slug][0]
     if category:
-        name = category["name"]
+        name = category['name']
     else:
         name = category_slug
-
-    return HttpResponse(
-        f"""
-        <h1>Категория: {name}</h1>
-        <p><a href="{reverse('blog:categories')}">Назад к категориям</a></p>
-    """
-    )
-
+    context = {
+        'name': name
+    }
+    return render(request, 'python_blog/category_detail.html', context=context)
 
 def catalog_tags(request):
-    return HttpResponse("Каталог тегов")
-
+    context = {
+        'tags': TAGS
+    }
+    return render(request, 'python_blog/tags_catalog.html', context=context)
 
 def tag_detail(request, tag_slug):
-    return HttpResponse(f"Страница тега {tag_slug}")
-# Главная страница
-def main_page(request):
-    return render(request, 'main.html')  # Отправляем в шаблон main.html
+    tag = [tag for tag in TAGS if tag['slug'] == tag_slug][0]
+    if tag:
+        name = tag['name']
+    else:
+        name = tag_slug
 
-# О проекте
-def about_page(request):
-    return render(request, 'about.html')  # Отправляем в шаблон about.html
-def blog_page(request):
-    posts = []  # Пока заглушка для списка постов
-    return render(request, 'blog.html', {'posts': posts})  # Передаём в шаблон список постов
+    context = {
+        'name': name
+    }
+    return render(request, 'python_blog/tag_detail.html', context=context)

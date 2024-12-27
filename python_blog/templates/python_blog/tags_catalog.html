@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Список тегов</h1>
+<hr>
+{% for tag in tags %}
+<p>Тег: {{ tag.name }}</p>
+<a href="{% url 'blog:tags_detail' tag.slug %}">{{ tag.name }}</a>
+<hr>
+{% endfor %}
+{% endblock %}

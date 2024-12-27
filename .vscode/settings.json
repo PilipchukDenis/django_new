@@ -1,0 +1,28 @@
+{
+  "emmet.includeLanguages": {
+    "django-html": "html"
+  },
+  "files.associations": {
+    "*/.html": "html",
+    "*/templates//*.html": "django-html",
+    "*/templates///.html": "django-html",
+    "*/templates/": "django-html",
+    "*/requirements{/,}.{txt,in}": "pip-requirements"
+  },
+  "[django-html]": {
+    "breadcrumbs.showClasses": true,
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": true,
+      "strings": true
+    }
+  },
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "db0",
+      "database": "${workspaceFolder:хаб}/db.sqlite3"
+    }
+  ]
+}
