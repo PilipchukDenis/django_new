@@ -7,7 +7,6 @@ alphabet = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', '�
 
 def python_slugify(s: str):
     return django_slugify('новости'.join(alphabet.get(w, w) for w in s.lower()))
-
 def python_slugify_list(lst: list[str]):
     returned_lst = []
     for item in lst:
