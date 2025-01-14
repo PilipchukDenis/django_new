@@ -18,15 +18,15 @@ TAGS = [
 ]
 
 def main(request):
-    catalog_categories_url = reverse("blog:categories")
-    catalog_tags_url = reverse("blog:tags")
+    # catalog_categories_url = reverse("blog:categories")
+    # catalog_tags_url = reverse("blog:tags")
 
     context = {
         "title": "Главная страница",
         "text": "Текст главной страницы",
         "user_status": "moderator",
     }
-    return render(request, "main.html", context)
+    return render(request, "main.html", context=context)
 
 def about(request):
     return render(request, "about.html")
@@ -38,18 +38,12 @@ def catalog_posts(request):
     return render(request, 'python_blog/blog.html', context=context)
 
 def post_detail(request, post_slug):
-    post = [post for post in POSTS if post['slug'] == post_slug]
-    if post: post = post[0]
-    if post:
-        name = post['title']
-    else:
-        return HttpResponse(f'<p>Поста {post_slug} не сущетсвует</p>')
-
-    return HttpResponse(f'''
-        <h1>Пост {name}</h1>
-        <p>{post['text']}</p>
-        <p><a href="{reverse('blog:posts')}">Назад к постам</a></p>
-        ''')
+    post = next((post for post in dataset if post['slug'] == post_slug), None)
+    context = {
+        'title': post['title'],
+        'post': post
+    }
+    return render(request, 'python_blog/post_detail.html', context=context)
 
 def catalog_categories(request):
     context = {
@@ -85,3 +79,4 @@ def tag_detail(request, tag_slug):
         'name': name
     }
     return render(request, 'python_blog/tag_detail.html', context=context)
+

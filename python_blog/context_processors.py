@@ -1,10 +1,3 @@
-"""
-Контекстный процессор передающий меню в каждый из шаблонов Джанго!
-Не забудьте подключить это в в settings.py -> TEMPLATES -> context_processors
-'python_blog.context_processors.menu_items', 
-"""
-
-
 def menu_items(request):
     menu = [
     {"title": "Главная", "url_name": "main"},

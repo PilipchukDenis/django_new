@@ -10,7 +10,7 @@ urlpatterns = [
     path('categories/<slug:category_slug>/', category_detail, name = 'category_detail'),
 # Теги
     path('tags/', catalog_tags, name = 'tags'),
-    path('tags/<slug:tag_slug>/', tag_detail, name = 'tags_detail'),
+    path('tags/<slug:tag_slug>/', tag_detail, name = 'tag_detail'),
 # Посты
     path('<slug:post_slug>/', post_detail, name = 'post_detail'),
 ]
