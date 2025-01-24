@@ -2,4 +2,5 @@ venv/
 *.рус
 __pycache__/
 db.sqlite3
-.idea
+.idea/
+.vscode/launch.json

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
 from .blog_data import dataset
+from .models import Post
 
 CATEGORIES = [
     {'slug': 'python', 'name': 'Python'},
@@ -32,15 +33,21 @@ def about(request):
     return render(request, "about.html")
 
 def catalog_posts(request):
+    posts = Post.objects.all()
     context = {
-            'posts': dataset
+            'posts': posts
     }
     return render(request, 'python_blog/blog.html', context=context)
 
 def post_detail(request, post_slug):
-    post = next((post for post in dataset if post['slug'] == post_slug), None)
+    post = None
+    for item in Post.objects.all():
+        if item.slug == post_slug:
+            post = item
+    if post is None:
+        return render(request, '404.html')
+    
     context = {
-        'title': post['title'],
         'post': post
     }
     return render(request, 'python_blog/post_detail.html', context=context)
