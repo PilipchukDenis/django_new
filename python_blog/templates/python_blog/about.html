@@ -1,0 +1,49 @@
+{% extends 'layout/base.html' %} 
+{% load static %}
+
+{% block title %}О проекте{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">О проекте</h1>
+                    
+                    <div class="mb-4">
+                        <h4><i class="bi bi-info-circle"></i> Описание проекта</h4>
+                        <p>Это блог-платформа, созданная с использованием Django и Bootstrap. Здесь вы найдете интересные статьи о программировании, технологиях и веб-разработке.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4><i class="bi bi-tools"></i> Технологии</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="bi bi-check2"></i> Django</li>
+                            <li class="list-group-item"><i class="bi bi-check2"></i> Bootstrap 5</li>
+                            <li class="list-group-item"><i class="bi bi-check2"></i> SQLite</li>
+                            <li class="list-group-item"><i class="bi bi-check2"></i> Python</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4><i class="bi bi-person-circle"></i> Контакты</h4>
+                        <div class="d-flex gap-3 justify-content-center">
+                            <a href="https://github.com/PilipchukDenis/django_new.git" class="btn btn-outline-primary">
+                                <i class="bi bi-github"></i> GitHub
+                            </a>
+                            <a href="https://t.me/PilipchukDenis" class="btn btn-outline-info">
+                                <i class="bi bi-telegram"></i> Telegram
+                            </a>
+                            <a href="https://workspace.google.com/intl/ru/gmail/" class="btn btn-outline-danger">
+                                <i class="bi bi-envelope"></i> Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

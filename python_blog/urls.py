@@ -1,26 +1,37 @@
+
 from django.urls import path
-from python_blog.views import catalog_posts, post_detail, catalog_categories, category_detail, catalog_tags, tag_detail
+from . import views
+
+'''
+типы конверторов: 
+str - строки, любые символы кроме слэша '/' (по умолчанию)
+int - положительные целые числа включая 0
+slug - ASCII буквы/цифры, дефисы и подчеркивания
+uuid - уникальные идентификаторы UUID
+path - строки, включая слэши '/'
+
+Пример:
+path('<str:name>/', views.index, name='index')
+'''
 
 app_name = 'blog'
 
-# Общий префикс posts/
 urlpatterns = [
-    # Каталог постов
-    path('', catalog_posts, name='catalog_posts'),
-    
-    # Категории
-    # Категории posts/categories/
-    # Категории posts/categories/python/
-    path('categories/', catalog_categories, name='catalog_categories'),
-    path('categories/<slug:category_slug>/', category_detail, name='category_detail'),
-    
-    # Теги
-    # Теги posts/tags/
-    # Теги posts/tags/python
-    path('tags/', catalog_tags, name='catalog_tags'),
-    path('tags/<slug:tag_slug>/', tag_detail, name='tag_detail'),
+    path('post/create/', views.post_create, name='post_create'),
+    path('post/<slug:post_slug>/update/', views.post_update, name='post_update'),
+    # about
+    path('about/', views.about, name="about"),
+    # category
+    path('categories/', views.catalog_categories, name='categories'),
+    path('categories/<slug:category_slug>/', views.category_detail, name="category_detail"),
+    # tag 
+    path('tags/', views.catalog_tags, name="tags"),
+    path('tags/<slug:tag_slug>/', views.tag_detail, name="tag_detail"),
+    # posts
+    path('', views.catalog_posts, name="posts"),
+    path('<slug:post_slug>/', views.post_detail, name="post_detail"),
 
-    # Посты
-    # Посты posts/tags/
-    path('<slug:post_slug>/', post_detail, name='post_detail'),
+    
+
+
 ]

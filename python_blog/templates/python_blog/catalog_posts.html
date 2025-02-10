@@ -1,0 +1,141 @@
+{% extends 'layout/base.html' %} 
+{% load cache %}
+{% load static %}
+
+{% block title %}Все посты{% endblock title %}
+    
+{% block content %}
+<section class="mb-5">
+    <form method="GET" action="{% url 'blog:posts' %}" class="card shadow-sm">
+        <div class="card-body">
+            <!-- Поисковая строка -->
+            <div class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search_query" class="form-control" 
+                           placeholder="Поиск по блогу..." value="{{ request.GET.search_query|default:'' }}">
+                    <button class="btn btn-dark" type="submit">
+                        <i class="bi bi-search"></i> Искать
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Сортировка (левая колонка) -->
+                <div class="col-md-6">
+                    <h5 class="mb-3"><i class="bi bi-sort-down me-2"></i>Сортировка</h5>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sort_by" value="created_date" 
+                                   id="sort_created" {% if request.GET.sort_by == 'created_date' or not request.GET.sort_by %}checked{% endif %}>
+                            <label class="form-check-label" for="sort_created">
+                                <i class="bi bi-calendar-plus me-1"></i> По дате создания
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sort_by" value="view_count" 
+                                   id="sort_views" {% if request.GET.sort_by == 'view_count' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort_views">
+                                <i class="bi bi-eye me-1"></i> По просмотрам
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sort_by" value="update_date" 
+                                   id="sort_updated" {% if request.GET.sort_by == 'update_date' %}checked{% endif %}>
+                            <label class="form-check-label" for="sort_updated">
+                                <i class="bi bi-calendar-check me-1"></i> По дате обновления
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Критерии поиска (правая колонка) -->
+                <div class="col-md-6">
+                    <h5 class="mb-3"><i class="bi bi-funnel me-2"></i>Критерии поиска</h5>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="search_content" value="1" 
+                                   id="search_content" {% if request.GET.search_content == '1' %}checked{% endif %}>
+                            <label class="form-check-label" for="search_content">
+                                <i class="bi bi-file-text me-1"></i> В тексте
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="search_title" value="1" 
+                                   id="search_title" {% if request.GET.search_title == '1' %}checked{% endif %}>
+                            <label class="form-check-label" for="search_title">
+                                <i class="bi bi-type me-1"></i> В заголовках
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="search_tags" value="1" 
+                                   id="search_tags" {% if request.GET.search_tags == '1' %}checked{% endif %}>
+                            <label class="form-check-label" for="search_tags">
+                                <i class="bi bi-tags me-1"></i> В тегах
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<section class="mb-5">
+    <h2 class="mb-4"><i class="bi bi-folder"></i> Категории</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for category in categories %}
+            {% include "python_blog/include/category_include.html" %}
+        {% endfor %}
+    </div>
+</section>
+
+<section class="mb-5">
+    <!-- В начале секции с постами -->
+    {% if user.is_authenticated %}
+    <div class="mb-4">
+        <a href="{% url 'blog:post_create' %}" class="btn btn-dark">
+            <i class="bi bi-plus-circle"></i> Создать пост
+        </a>
+    </div>
+    {% endif %}
+    <h2 class="mb-4"><i class="bi bi-star"></i>Все посты блога</h2>
+    {% if posts %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for post in posts %}
+                {% include "python_blog/include/card_include.html" %}
+            {% endfor %}
+        </div>
+        {% if posts.has_other_pages %}
+            <nav class="mt-5">
+                <ul class="pagination-custom d-flex justify-content-center align-items-center gap-3">
+                    {% if posts.has_previous %}
+                        <li>
+                            <a href="?page={{ posts.previous_page_number }}" class="pagination-circle small">
+                                {{ posts.previous_page_number }}
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li>
+                        <span class="pagination-circle active">{{ posts.number }}</span>
+                    </li>
+
+                    {% if posts.has_next %}
+                        <li>
+                            <a href="?page={{ posts.next_page_number }}" class="pagination-circle small">
+                                {{ posts.next_page_number }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle me-2"></i> По вашему запросу ничего не найдено
+        </div>
+    {% endif %}
+</section>
+{% endblock content %}
+
+

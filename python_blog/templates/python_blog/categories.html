@@ -1,0 +1,17 @@
+{% extends 'layout/base.html' %} 
+{% load static %}
+
+{% block title %}Категории{% endblock title %}
+    
+{% block content %}
+<div class="container">
+    <section class="mb-5">
+        <h2 class="mb-4"><i class="bi bi-folder"></i> Все категории</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for category in categories %}
+                {% include 'python_blog/include/category_include.html' %}
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock content %}
