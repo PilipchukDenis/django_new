@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ tag.name }} | Тег
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb d-flex align-items-center">
+                    <li class="breadcrumb-item">
+                        <a href="{% url "blog:catalog_tags" %}" class="badge bg-dark text-white text-decoration-none">
+                            <i class="bi bi-tags"></i> Теги
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="badge bg-warning text-white">#{{ tag.name }}</span>
+                    </li>
+                </ol>
+            </nav>
+
+            <div class="card border-dark mb-4">
+                <div class="card-body">
+                    <h1 class="card-title text-dark">
+                        <i class="bi bi-tags"></i>#{{ tag.name }}
+                    </h1>
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-file-text"></i>{{ tag.posts_count }} постов
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Посты -->
+    <div class="row">
+        <div class="col-12">
+            {% for post in posts %}
+                {% include "post_preview_include.html" %}
+            {% empty %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle"></i> Постов с таким тегом нет
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <a href="{% url 'blog:catalog_tags' %}" class="btn btn-warning d-none d-md-inline-block">
+                <i class="bi bi-arrow-left"></i> Вернуться к списку тегов
+            </a>
+            <a href="{% url 'blog:catalog_tags' %}" class="btn btn-warning d-inline-block d-md-none">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+        </div>
+    </div>
+    
+    {% include 'pagination.html' with page_obj=posts %}
+</div>
+{% endblock content %}

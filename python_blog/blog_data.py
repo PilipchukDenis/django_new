@@ -9,11 +9,8 @@ dataset = [
         "likes": 142,
         "comments": [
             {"username": "alex_dev", "text": "Отличное обновление!"},
-            {
-                "username": "pythonista",
-                "text": "Эти нововведения сильно ускорят работу.",
-            },
-        ],
+            {"username": "pythonista", "text": "Эти нововведения сильно ускорят работу."}
+        ]
     },
     {
         "title": "Django: основные команды",
@@ -24,15 +21,9 @@ dataset = [
         "views": 4901,
         "likes": 85,
         "comments": [
-            {
-                "username": "webdev_jane",
-                "text": "Спасибо за статью! Эти команды точно пригодятся.",
-            },
-            {
-                "username": "john_doe",
-                "text": "Организовал шпаргалку у себя на рабочем столе.",
-            },
-        ],
+            {"username": "webdev_jane", "text": "Спасибо за статью! Эти команды точно пригодятся."},
+            {"username": "john_doe", "text": "Организовал шпаргалку у себя на рабочем столе."}
+        ]
     },
     {
         "title": "Как настроить Django Rest Framework",
@@ -44,11 +35,8 @@ dataset = [
         "likes": 201,
         "comments": [
             {"username": "api_guru", "text": "Этот фреймворк просто спасает!"},
-            {
-                "username": "dev_peter",
-                "text": "Установил и настроил за пару минут. Спасибо!",
-            },
-        ],
+            {"username": "dev_peter", "text": "Установил и настроил за пару минут. Спасибо!"}
+        ]
     },
     {
         "title": "Советы по оптимизации Django приложений",
@@ -60,8 +48,8 @@ dataset = [
         "likes": 109,
         "comments": [
             {"username": "optimizator", "text": "Люблю делать проекты быстрее!"},
-            {"username": "django_fan", "text": "Спасибо за ценные советы!"},
-        ],
+            {"username": "django_fan", "text": "Спасибо за ценные советы!"}
+        ]
     },
     {
         "title": "Python: работа с асинхронными функциями",
@@ -73,11 +61,8 @@ dataset = [
         "likes": 130,
         "comments": [
             {"username": "async_fan", "text": "Асинхронность - будущее!"},
-            {
-                "username": "sync_master",
-                "text": "Полезное руководство, но всё ещё предпочитаю синхронный код.",
-            },
-        ],
+            {"username": "sync_master", "text": "Полезное руководство, но всё ещё предпочитаю синхронный код."}
+        ]
     },
     {
         "title": "Создаем блог с помощью Django",
@@ -89,11 +74,8 @@ dataset = [
         "likes": 178,
         "comments": [
             {"username": "blogger_anna", "text": "Создала свой первый блог!"},
-            {
-                "username": "django_beginner",
-                "text": "Очень подробное руководство, спасибо!",
-            },
-        ],
+            {"username": "django_beginner", "text": "Очень подробное руководство, спасибо!"}
+        ]
     },
     {
         "title": "Работа с сигналами в Django",
@@ -104,12 +86,9 @@ dataset = [
         "views": 3899,
         "likes": 95,
         "comments": [
-            {
-                "username": "signal_guru",
-                "text": "Сигналы - удобный способ расширить функциональность!",
-            },
-            {"username": "code_monkey", "text": "Сложно для новичка, но полезно."},
-        ],
+            {"username": "signal_guru", "text": "Сигналы - удобный способ расширить функциональность!"},
+            {"username": "code_monkey", "text": "Сложно для новичка, но полезно."}
+        ]
     },
     {
         "title": "Роутинг в Django: маршруты и URL",
@@ -120,12 +99,9 @@ dataset = [
         "views": 4920,
         "likes": 102,
         "comments": [
-            {
-                "username": "url_mapper",
-                "text": "Наконец-то понял как работают URL в Django!",
-            },
-            {"username": "web_junior", "text": "Применяю эти советы в своем проекте!"},
-        ],
+            {"username": "url_mapper", "text": "Наконец-то понял как работают URL в Django!"},
+            {"username": "web_junior", "text": "Применяю эти советы в своем проекте!"}
+        ]
     },
     {
         "title": "Разработка тестов в Django",
@@ -137,7 +113,7 @@ dataset = [
         "likes": 120,
         "comments": [
             {"username": "test_dev", "text": "Теперь мои приложения работают надёжнее!"}
-        ],
+        ]
     },
     {
         "title": "Настройка виртуальных окружений в Python",
@@ -148,14 +124,8 @@ dataset = [
         "views": 5299,
         "likes": 113,
         "comments": [
-            {
-                "username": "env_pro",
-                "text": "Теперь все мои проекты отделены друг от друга!",
-            },
-            {
-                "username": "python_newbie",
-                "text": "Раньше не понимал, зачем нужны виртуальные окружения. Теперь ясно!",
-            },
-        ],
-    },
+            {"username": "env_pro", "text": "Теперь все мои проекты отделены друг от друга!"},
+            {"username": "python_newbie", "text": "Раньше не понимал, зачем нужны виртуальные окружения. Теперь ясно!"}
+        ]
+    }
 ]

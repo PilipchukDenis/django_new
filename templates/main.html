@@ -1,11 +1,58 @@
 {% extends "base.html" %}
-{% load static %}
+
 {% block title %}
-Main
+{{ title }}
 {% endblock title %}
-{% block head %}
-<link rel="stylesheet" href="{% static 'css/main_page.css' %}">
-{% endblock head %}
+
 {% block content %}
-<h1>Главная страница</h1>
+    <div class="container my-4">
+        <h1 class="text-center">{{ title }}</h1>
+        <p class="text-center">{{ text }}</p>
+        <hr>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Заголовок 1 <i class="bi bi-star-fill text-warning"></i></h5>
+                        <p class="card-text">Некоторый текст о чем-то интересном, который расскажет вам больше. <i class="bi bi-info-circle"></i></p>
+                        <a href="#" class="btn btn-warning">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Заголовок 2 <i class="bi bi-heart-fill text-danger"></i></h5>
+                        <p class="card-text">Некоторый другой текст, который тоже может быть интересен. <i class="bi bi-check-circle"></i></p>
+                        <a href="#" class="btn btn-warning">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Заголовок 3 <i class="bi bi-gear-fill text-success"></i></h5>
+                        <p class="card-text">Текст о последних новостях или обновлениях, которые стоит знать. <i class="bi bi-exclamation-circle"></i></p>
+                        <a href="#" class="btn btn-warning">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    {% comment %} Условия в шаблонизаторе Django {% endcomment %}
+    <div class="text-center">
+        {% if user_status == "admin" %}
+        <p>Здравствуй, Админ!</p>
+        {% elif user_status == "moderator" %}
+        <p>Здравствуй, Модератор!</p>
+        {% else %}
+        <p>Здравствуй, Смертный!</p>
+        {% endif %}
+        {% if user_status in "admin moderator editor" %}
+            <p>У вас есть права на редактирование</p>
+        {% endif %}
+    </div>
 {% endblock content %}

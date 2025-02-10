@@ -1,89 +1,99 @@
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.urls import reverse
-from .blog_data import dataset
-from .models import Post
+from .models import Category, Post, Tag
+from django.db.models import Count
+from django.core.paginator import Paginator
 
-CATEGORIES = [
-    {'slug': 'python', 'name': 'Python'},
-    {'slug': 'django', 'name': 'Django'},
-    {'slug': 'postgresql', 'name': 'PostgreSQL'},
-    {'slug': 'docker', 'name': 'Docker'},
-    {'slug': 'linux', 'name': 'Linux'},
-]
-
-TAGS = [
-    {'slug': 'html', 'name': 'HTML'},
-    {'slug': 'css', 'name': 'CSS'},
-    {'slug': 'sql', 'name': 'SQL'}
-]
 
 def main(request):
-    # catalog_categories_url = reverse("blog:categories")
-    # catalog_tags_url = reverse("blog:tags")
+    catalog_categories_url: str = reverse('blog:catalog_categories')
+    catalog_tags_url: str = reverse('blog:catalog_tags')
 
     context = {
         "title": "Главная страница",
         "text": "Текст главной страницы",
-        "user_status": "moderator",
+        "user_status": "admin",
     }
-    return render(request, "main.html", context=context)
+    return render(request, "main.html", context)
 
 def about(request):
-    return render(request, "about.html")
+
+    context = {
+        "title": "О компании",
+        "text": "Мы - команда профессионалов в области веб-разработки",
+    }
+    return render(request, "about.html", context)
+
 
 def catalog_posts(request):
-    posts = Post.objects.all()
+    # Получаем все опубликованные посты
+    posts= Post.objects.select_related('category', 'author').prefetch_related('tags').all()
+    paginator = Paginator(posts, 3) # Показываем по 3 поста на странице
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-            'posts': posts
+        'title': 'Блог',
+        'posts': page_obj
     }
-    return render(request, 'python_blog/blog.html', context=context)
+    return render(request, 'blog.html', context)
 
 def post_detail(request, post_slug):
-    post = None
-    for item in Post.objects.all():
-        if item.slug == post_slug:
-            post = item
-    if post is None:
-        return render(request, '404.html')
-    
-    context = {
-        'post': post
+    post= Post.objects.get(slug=post_slug)
+    context= {
+        "title": post.title, 
+        "post": post
     }
-    return render(request, 'python_blog/post_detail.html', context=context)
+    return render(request, 'post_detail.html', context)
 
 def catalog_categories(request):
-    context = {
-        'categories': CATEGORIES
+    categories= Category.objects.all()
+    paginator = Paginator(categories, 5) # Показываем по 5 категорий на странице
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context= {
+        "categories": page_obj, 
+        "title": "Категории блога"
     }
-    return render(request, 'python_blog/catalog_categories.html', context=context)
+    return render(request, "catalog_categories.html", context)
 
 def category_detail(request, category_slug):
-    category = [cat for cat in CATEGORIES if cat['slug'] == category_slug][0]
-    if category:
-        name = category['name']
-    else:
-        name = category_slug
-    context = {
-        'name': name
+    category: dict[str, str] = Category.objects.get(slug=category_slug)
+    posts= category.posts.all()
+    paginator = Paginator(posts, 2) # Показываем по 2 поста на странице
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context={
+        "title": f"Категория: {category.name}",
+        "category": category,
+        "posts": page_obj,
+        "active_menu": "categories"
     }
-    return render(request, 'python_blog/category_detail.html', context=context)
+    return render(request, "category_detail.html", context)
+
 
 def catalog_tags(request):
+    tags = Tag.objects.annotate(posts_count=Count('posts')).order_by('-posts_count')
+    paginator = Paginator(tags, 3) # Показываем по 3 тега на странице
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'tags': TAGS
+        "title": "Теги блога",
+        "tags": page_obj,
+        "active_menu": "tags"
     }
-    return render(request, 'python_blog/tags_catalog.html', context=context)
+    return render(request, "catalog_tags.html", context)
 
 def tag_detail(request, tag_slug):
-    tag = [tag for tag in TAGS if tag['slug'] == tag_slug][0]
-    if tag:
-        name = tag['name']
-    else:
-        name = tag_slug
-
+    tag = Tag.objects.get(slug=tag_slug)
+    posts = tag.posts.all()
+    paginator = Paginator(posts, 3) # Показываем по 3 поста на странице
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'name': name
+        "title": f"Тег: {tag.name}",
+        "tag": tag,
+        "posts": page_obj,
+        "active_menu": "tags"
     }
-    return render(request, 'python_blog/tag_detail.html', context=context)
-
+    return render(request, "tag_detail.html", context)

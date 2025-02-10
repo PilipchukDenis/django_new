@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+Теги блока
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row"mb-4>
+        <div class="col-12">
+            <h1 class="text-dark"><i class="bi bi-tags"></i> Облако тегов</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-dark">
+                <div class="card-body">
+                    <div class="tag-cloud d-flex flex-wrap gap-3 justify-content-center">
+                        {% for tag in tags %}
+                            <a href="{{ tag.get_absolute_url}}" class="text-decoration-none">
+                                <div class="tag-item p-3 bg-warning text-dark rounded-3
+                                        {% if tag.posts_count > 10 %}fs-3
+                                        {% elif tag.posts_count > 5 %}fs-4
+                                        {% elif tag.posts_count > 2 %}fs-5
+                                        {% else %}fs-6{% endif %}">
+                                    <i class="bi bi-tag"></i>
+                                    {{ tag.name }}
+                                    <span class="badge bg-dark text-white">
+                                        {{ tag.posts_count }}
+                                    </span>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <div class="alert alert-warning w-100 text-center">
+                                <i class="bi bi-info-circle"></i> Теги пока не добавлены
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+{% include 'pagination.html' with page_obj=tags %}
+{% endblock content %}
