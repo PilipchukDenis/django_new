@@ -1,0 +1,10 @@
+{% load mytags %}
+{% if posts.paginator.num_pages > 1 %}
+    <div class="row">
+        <div class="col d-flex justify-content-center">
+            {% for num in posts.paginator.num_pages|range_filter  %}
+                <a href="?page={{ num|add:1 }}{% if request.GET.search %}&search={{request.GET.search}}{% endif %}{% if request.GET.s_from %}&s_from={{request.GET.s_from}}{% endif %}" class="btn {% if posts.number|add:-1 == num %}btn-danger {% else %} btn-secondary {% endif %}  mx-2 mb-5">{{ num|add:1 }}</a>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

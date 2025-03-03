@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Категория: {{category.name}}</h1>
-<p>Список постов этой категории:</p>
+<h1>Тег: {{tag.name}}</h1>
+<p>Список постов с этим тегом</p>
 <div class='row'>
     <div class="col">
-        {% for post in posts %}
+        {% for post in tag.posts.all %}
             {% include "python_blog/post_preview_include.html" %}
         {% endfor %}
     </div>
-    {% include "python_blog/include_paginator.html" %}
 </div>
 {% endblock content %}

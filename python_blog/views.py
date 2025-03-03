@@ -1,219 +1,192 @@
 from django.shortcuts import render
-from django.core.paginator import Paginator
-from django.db.models import Count
-from django.db.models import F, Q
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponse
 from django.urls import reverse
-from . import models
-from .forms import PostForm
-
+from django.core.paginator import Paginator
+from django.db.models import F, Q, Count
+from python_blog.forms import PostForm, SearchForm
+from .blog_data import dataset
+from .models import Post, Category, Tag
+from django.shortcuts import redirect, get_object_or_404
+from django.utils.text import slugify
+from unidecode import unidecode
 
 
 def main(request):
-    """На главной странице отображаться сборная информация: последние посты, популярные статьи, категории.
-    Выводит:
-    - 6 последних опубликованных постов, отсортированных по дате обновления
-    - Все доступные категории
-    - 6 самых популярных постов по количеству просмотров
-    Args:
-        request: Объект HTTP-запроса
-    Returns:
-        HttpResponse: Отрендеренный шаблон main.html с контекстом
-    """
-    posts = models.Post.objects.select_related('category', 'author').prefetch_related('hashtags').filter(is_published=True).order_by('-updated_at')[:6]
-    categories = models.Categories.objects.annotate(post_count=Count('posts'))
-    popular_posts = models.Post.objects.select_related('category', 'author').prefetch_related('hashtags').filter(is_published=True).order_by('-views')[:6]
+    # catalog_categories_url = reverse("blog:categories")
+    # catalog_tags_url = reverse("blog:tags")
 
     context = {
-       "posts" : posts,
-       "popular_posts" : popular_posts,
-       "categories" : categories,
+        "title": "Главная страница",
+        "text": "Текст главной страницы",
+        "user_status": "moderator",
     }
-
-    return render(request, 'python_blog/main.html', context)
-
-
-def category_detail(request, category_slug):
-    """Отображает детальную страницу категории.
-    Выводит все опубликованные посты, относящиеся к выбранной категории.
-    Args:
-        request: Объект HTTP-запроса
-        category_slug: Слаг категории для фильтрации
-    Returns:
-        HttpResponse: Отрендеренный шаблон category_detail.html с контекстом
-    """
-    category = models.Categories.objects.get(slug=category_slug)
-    posts = models.Post.objects.select_related('category', 'author').prefetch_related('hashtags').filter(category=category, is_published=True)
-
-    context = {
-       "category" : category,
-        "posts" : posts,
-        
-    }
-
-    return render(request, 'python_blog/category_detail.html', context)
-
-
-def catalog_categories(request):
-    """Отображает каталог всех категорий блога.  он есть в макете.
-    Выводит список всех доступных категорий.
-    Args:
-        request: Объект HTTP-запроса
-    Returns:
-        HttpResponse: Отрендеренный шаблон categories.html с контекстом
-    """
-    categories = models.Categories.objects.annotate(post_count=Count('posts'))
-
-    context = {
-       "categories" : categories,
-    }
-
-    return render(request, 'python_blog/categories.html', context)
+    return render(request, "main.html", context=context)
 
 
 def about(request):
-    """Отображает страницу "О нас".
-    Args:
-        request: Объект HTTP-запроса
-    Returns:
-        HttpResponse: Отрендеренный шаблон about.html
-    """
-
-    return render(request, 'python_blog/about.html')
-
-
-def post_detail(request, post_slug):
-    """Отображает детальную страницу поста.    
-    Выводит содержимое поста и все опубликованные комментарии к нему.
-    Args:
-        request: Объект HTTP-запроса
-        post_slug: Слаг поста для поиска
-    Returns:
-        HttpResponse: Отрендеренный шаблон post_detail.html с контекстом
-    """
-    post = models.Post.objects.select_related('category', 'author').prefetch_related('hashtags').get(slug=post_slug)
-    viewed_posts = request.session.get('viewed_posts', [])
-
-    if post.id not in viewed_posts:
-        models.Post.objects.filter(pk=post.pk).update(views=F('views') + 1)
-        viewed_posts.append(post.id)
-        request.session['viewed_posts'] = viewed_posts
-    
-    comments = models.Comments.objects.filter(post=post, is_published=True)
-
-    context = {
-        "post": post,
-        "comments": comments,
-    }
-    return render(request, 'python_blog/post_detail.html', context)
+    return render(request, "about.html")
 
 
 def catalog_posts(request):
-    """Отображает каталог всех постов с фильтрацией по дате обновления и пагинацией по 10 постов на странице.
-    Выводит:
-    - Список всех категорий
-    - Все опубликованные посты, отсортированные по дате обновления
-    Args:
-        request: Объект HTTP-запроса
-    Returns:
-        HttpResponse: Отрендеренный шаблон catalog_posts.html с контекстом
-    """
 
-    categories = models.Categories.objects.annotate(post_count=Count('posts'))
-    posts = models.Post.objects.select_related('category', 'author').prefetch_related('hashtags').filter(is_published=True)
-    
-    # Поиск
-    search_query = request.GET.get('search_query', '')
-    if search_query:
-        q_object = Q()
-        if request.GET.get('search_content') == '1':
-            q_object |= Q(content__icontains=search_query)
-        if request.GET.get('search_title') == '1':
-            q_object |= Q(title__icontains=search_query)
-        if request.GET.get('search_tags') == '1':
-            q_object |= Q(hashtags__name__icontains=search_query)
-        
-        if not q_object:
-            q_object = Q(content__icontains=search_query)
-        
-        posts = posts.filter(q_object).distinct()
-        messages.info(request, f'Найдено {posts.count()} результатов по запросу "{search_query}"')
+    forms = SearchForm(request.GET)
+    q_obj = Q()
 
-    # Сортировка
-    sort_by = request.GET.get('sort_by', 'created_date')
-    if sort_by == 'view_count':
-        posts = posts.order_by('-views')
-    elif sort_by == 'update_date':
-        posts = posts.order_by('-updated_at')
-    else:
-        posts = posts.order_by('-created_at')
+    if forms.is_valid():
+        search = forms.cleaned_data.get("search")
+        s_from = forms.cleaned_data.get("s_from")
+        if s_from == "title":
+            q_obj |= Q(title__icontains=search)
+        elif s_from == "tags":
+            q_obj |= Q(tags__name__icontains=search)
+        else:
+            q_obj |= Q(content__icontains=search)
 
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page', 1)
-    posts = paginator.get_page(page_number)
+    posts = (
+        Post.objects.filter(q_obj)
+        .select_related("category")
+        .prefetch_related("tags")
+        .order_by("-created_at")
+    )
+
+    paginator = Paginator(posts, 3)
+    page_num = request.GET.get("page", 1)
+    paginator = paginator.get_page(page_num)
 
     context = {
-        "categories": categories,
-        "posts": posts,
+        "posts": paginator,
+        "posts_count": posts.count(),
+        "form": forms,
     }
-    
-    return render(request, 'python_blog/catalog_posts.html', context)
+    return render(request, "python_blog/blog.html", context=context)
+
+
+def post_detail(request, post_slug):
+    post = get_object_or_404(Post, slug=post_slug)
+
+    session = request.session
+    session_key = f"post_views_{post.id}"
+    if session_key not in session:
+        post.views = F("views") + 1
+        post.save()
+        post.refresh_from_db()
+        session[session_key] = True
+
+    context = {"post": post}
+    return render(request, "python_blog/post_detail.html", context=context)
+
+
+def catalog_categories(request):
+    categories = Category.objects.all()
+    categories_count = {cat.name: cat.posts.count() for cat in categories}
+    context = {"categories": categories, "categories_count": categories_count}
+    return render(request, "python_blog/catalog_categories.html", context=context)
+
+
+def category_detail(request, category_slug):
+    category = Category.objects.get(slug=category_slug)
+
+    posts = (
+        Post.objects.filter(category=category)
+        .select_for_update("category")
+        .prefetch_related("tags")
+    )
+    paginator = Paginator(posts, 3)
+    page_num = request.GET.get("page", 1)
+    paginator = paginator.get_page(page_num)
+
+    context = {"category": category, "posts": paginator}
+
+    return render(request, "python_blog/category_detail.html", context=context)
 
 
 def catalog_tags(request):
-    return HttpResponse('Каталог тегов')
+    tags = Tag.objects.all()
+    context = {"tags": tags}
+    return render(request, "python_blog/tags_catalog.html", context=context)
+
 
 def tag_detail(request, tag_slug):
-    return HttpResponse(f'Тег {tag_slug}')
+    tag = Tag.objects.get(slug=tag_slug)
+
+    context = {"tag": tag}
+    return render(request, "python_blog/tag_detail.html", context=context)
 
 
-def about(request):
-    return render(request, 'python_blog/about.html')
-
-
-
-@login_required
 def post_create(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
+    if request.method == "POST":
+        form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
             post.save()
-            form.save_m2m()  # Сохраняем связи many-to-many
-            messages.success(request, 'Пост успешно создан!')
-            return redirect('blog:post_detail', post_slug=post.slug)
+
+            tags = form.cleaned_data.get("tag_string", "")
+            if tags:
+                tag_names = [t.strip() for t in tags.split(",")]
+                for tag_name in tag_names:
+                    if tag_name:
+                        tag, created = Tag.objects.get_or_create(
+                            name=tag_name,
+                            defaults={"slug": slugify(unidecode(tag_name))},
+                        )
+                        post.tags.add(tag)
+
+            return redirect(post.get_absolute_url())
+        context = {
+            "title": "Создание поста",
+            "name": "Создание поста",
+            "form": form,
+            "url_to": reverse(
+                "blog:post_create",
+            ),
+            "category": Category.objects.all(),
+            "name_form": "Создание поста",
+            "button_name": "Создать",
+        }
+        return render(request, "python_blog/post_create.html", context=context)
     else:
         form = PostForm()
-    
-    return render(request, 'python_blog/post_form.html', {
-        'form': form,
-        'title': 'Создание поста',
-        'button_text': 'Создать пост'
-    })
+        context = {
+            "title": "Создание поста",
+            "name": "Создание поста",
+            "form": form,
+            "category": Category.objects.all(),
+            "name_form": "Создание поста",
+            "button_name": "Создать",
+        }
+        return render(request, "python_blog/post_create.html", context=context)
 
-@login_required
 def post_update(request, post_slug):
-    post = get_object_or_404(models.Post, slug=post_slug)
-    
-    if request.user != post.author:
-        messages.error(request, 'У Вас нет прав для редактирования этого поста')
-        return redirect('blog:post_detail', post_slug=post_slug)
-    
-    if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES, instance=post)
+    post = get_object_or_404(Post, slug=post_slug)
+    if request.method == "POST":
+        old_slug = post.slug
+        form = PostForm(request.POST, instance=post)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Пост успешно обновлен!')
-            return redirect('blog:post_detail', post_slug=post.slug)
+            post = form.save(commit=False)
+            post.slug = old_slug
+            post.save()
+
+            tag_string  = form.cleaned_data.get("tag_string", "")
+            if tag_string :
+                post.tags.clear()
+                tag_names = [t.strip() for t in tag_string .split(",")]
+                for tag_name in tag_names:
+                    if tag_name:
+                        tag, created = Tag.objects.get_or_create(
+                            name=tag_name,
+                            defaults={"slug": slugify(unidecode(tag_name))},
+                        )
+                        post.tags.add(tag)
+
+            return redirect(post.get_absolute_url())
     else:
         form = PostForm(instance=post)
-    
-    return render(request, 'python_blog/post_form.html', {
-        'form': form,
-        'title': 'Редактирование поста',
-        'button_text': 'Сохранить изменения'
-    })
+        context = {
+            "title": "Редактирование поста",
+            "name": "Редактирование поста",
+            "form": form,
+            "category": Category.objects.all(),
+            "url_to": reverse("blog:post_update", kwargs={"post_slug": post.slug}),
+            "name_form": "Редактирование поста",
+            "button_name": "Сохранить",
+        }
+        return render(request, "python_blog/post_create.html", context=context)

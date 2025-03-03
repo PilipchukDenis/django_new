@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ name_form }}</h1>
+    <form action="{{ url_to }}" method="POST" class="form-control">
+        {% csrf_token %}
+        <div class="fw-bold mb-3">
+            <label for="id_title" class="form-label">Название статьи:</label>
+            <input type="text" id="id_title" name="title" class="form-control" placeholder="{% if form.instance.title %} form.instance.title {% else %}Название статьи: {% endif %}" required value="{{ form.instance.title|default:"" }}">
+        </div>
+
+        <div class="fw-bold mb-3">
+            <label for="id_content" class="form-label">Текст статьи:</label>
+            <textarea id="id_content" name="content" class="form-control" placeholder="Текст статьи" required>{{ form.instance.content|default:"" }}</textarea>
+        </div>  
+
+        <div class="fw-bold mb-3">   
+            <label for="" class="form-label">Выберите категорию:</label>
+            {{ form.category }}
+        </div> 
+
+        <div class="fw-bold mb-3">
+            <label for="id_tags" class="form-label">Теги статьи (через запятую):</label>
+            <input type="text" id="id_tags" name="tag_string" placeholder="Теги статьи" class="form-control" 
+                   value="{% if form.instance.id %}{% for tag in form.instance.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}">
+        </div>
+        
+
+        <div class="">
+            {% if form.errors %}
+                <div class="error">
+                    <strong>Ошибки:</strong>
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ button_name }}</button>
+    </form>
+{% endblock content %}

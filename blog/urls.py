@@ -1,20 +1,35 @@
-from django.conf import settings
-from django.conf.urls.static import static
+"""
+URL configuration for blog project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/5.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
 from django.contrib import admin
 from django.urls import path, include
-from python_blog import views
-
+from python_blog.views import main, about
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('about/', views.about, name="about"),
     path('posts/', include('python_blog.urls')),
-    path('',  views.main, name="main"),
-    
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('about/', about, name = 'about'),
+    path('users/', include('users.urls')),
+    path('', main, name = 'main'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
-    urlpatterns += [
-        path('__debug__/', include('debug_toolbar.urls')),
-    ]
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
