@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Заявки{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Фильтр по мастерам -->
+        <div class="col-md-3">
+            <h5 class="mb-3">Фильтр по мастеру</h5>
+            <ul class="list-group">
+                <li class="list-group-item {% if not selected_master %}active{% endif %}">
+                    <a href="{% url 'visit_list' %}" class="text-decoration-none text-dark">Все мастера</a>
+                </li>
+                {% for master in masters %}
+                <li class="list-group-item {% if selected_master == master.id|stringformat:'s' %}active{% endif %}">
+                    <a href="?master={{ master.id }}&q={{ search_query }}" class="text-decoration-none text-dark">
+                        {{ master.first_name }} {{ master.last_name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Список заявок -->
+        <div class="col-md-9">
+            <h2 class="mb-4">Список заявок</h2>
+
+            <!-- Форма поиска -->
+            <form method="GET" class="mb-3 d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Поиск по имени или телефону" value="{{ search_query }}">
+                <input type="hidden" name="master" value="{{ selected_master }}">
+                <button type="submit" class="btn btn-warning">Поиск</button>
+            </form>
+
+            {% if visits %}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Имя</th>
+                            <th>Телефон</th>
+                            <th>Дата</th>
+                            <th>Статус</th>
+                            <th>Мастер</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for visit in visits %}
+                        <tr>
+                            <td>{{ visit.name }}</td>
+                            <td>{{ visit.phone }}</td>
+                            <td>{{ visit.created_at|date:"d.m.Y H:i" }}</td>
+                            <td>
+                                {% if visit.status == 0 %}<span class="badge bg-secondary">Не подтверждена</span>{% endif %}
+                                {% if visit.status == 1 %}<span class="badge bg-success">Подтверждена</span>{% endif %}
+                                {% if visit.status == 2 %}<span class="badge bg-danger">Отменена</span>{% endif %}
+                                {% if visit.status == 3 %}<span class="badge bg-primary">Выполнена</span>{% endif %}
+                            </td>
+                            <td>{{ visit.master.first_name }} {{ visit.master.last_name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Пагинация -->
+                {% if is_paginated %}
+                <nav>
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&q={{ search_query }}&master={{ selected_master }}">&laquo; Первая</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&master={{ selected_master }}">Назад</a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_obj.number }} из {{ paginator.num_pages }}</span>
+                        </li>
+                        
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&master={{ selected_master }}">Вперед</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ paginator.num_pages }}&q={{ search_query }}&master={{ selected_master }}">Последняя &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            {% else %}
+                <p class="alert alert-warning">Заявок не найдено.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

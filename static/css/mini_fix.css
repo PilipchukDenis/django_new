@@ -1,0 +1,58 @@
+/* Только для исправления цвета текста в выпадающих списках */
+select.form-control option {
+  color: #f8f9fa !important;
+  background-color: #343a40 !important;
+}
+
+select.form-control:hover,
+select.form-control:focus,
+select.form-control option:hover,
+select.form-control option:focus {
+  color: #f8f9fa !important;
+}
+
+/* Дополнительные селекторы для разных типов полей */
+.selector select,
+.selector-available select,
+.selector-chosen select,
+.admin-autocomplete,
+.select2-container select,
+.select2-selection,
+.select2-results__option,
+.select2-results__options,
+.django-select2 select,
+select[name*="filter"],
+.changelist-filter select {
+  color: #f8f9fa !important;
+  background-color: #343a40 !important;
+}
+
+/* Улучшение контрастности основного текста в полях выбора */
+select.form-control,
+.select2-selection__rendered,
+.select2-selection--single,
+.django-select2,
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: #ffffff !important; /* Более яркий белый для лучшей контрастности */
+  font-weight: 500 !important; /* Немного увеличиваем жирность шрифта */
+}
+
+/* Дополнительно увеличиваем контрастность для фильтров в админке */
+.changelist-filter h3,
+.changelist-filter li,
+.changelist-filter a,
+#changelist-filter h2,
+#changelist-filter h3,
+#changelist-filter li,
+#changelist-filter a {
+  color: #ffffff !important;
+}
+
+/* Поля ввода текста также делаем более контрастными */
+input[type="text"],
+textarea.form-control {
+  color: #ffffff !important;
+  background-color: #343a40 !important;
+}
